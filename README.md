@@ -371,3 +371,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Built with ❤️ for competitive learners worldwide**
 
 *Challenge your mind. Race your friends. Become a champion.*
+\nDeployment trigger: README update (for Vercel rebuild)
