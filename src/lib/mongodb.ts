@@ -1,11 +1,7 @@
 import mongoose from 'mongoose'
 
-const MONGODB_URI = process.env.MONGODB_URI!
+const MONGODB_URI = process.env.MONGODB_URI
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || 'flashcard_frenzy'
-
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local')
-}
 
 interface Global {
   mongoose: {
@@ -28,6 +24,10 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
+    if (!MONGODB_URI) {
+      throw new Error('Please define the MONGODB_URI environment variable')
+    }
+
     const opts = {
       bufferCommands: false,
       dbName: MONGODB_DB_NAME,
