@@ -2,6 +2,16 @@ import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// For URL validation
+const isValidUrl = (urlString: string): boolean => {
+  try {
+    new URL(urlString);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 // Simple rate limiting (per IP)
 const RATE_LIMIT = 100; // requests per 15 minutes
 const WINDOW_MS = 15 * 60 * 1000;
@@ -31,23 +41,29 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Skip middleware if environment variables are not set (development mode)
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return NextResponse.next();
-  }
-
   let response = NextResponse.next({
     request: {
       headers: request.headers,
     },
   });
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  // Skip Supabase initialization in any of these cases:
+  // 1. Missing environment variables
+  // 2. Build time
+  // 3. Development mode without env vars
+  // 4. Invalid URLs
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  
+  if (!supabaseUrl || !supabaseAnonKey || 
+      !supabaseUrl.startsWith('http') || 
+      process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build') {
+    return response;
+  }
 
-  // Skip supabase check if we're running the build
-  const isBuildTime = process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build';
-  if (isBuildTime) {
+  try {
+    // Validate URL before creating client
+    new URL(supabaseUrl);
     return response;
   }
 
