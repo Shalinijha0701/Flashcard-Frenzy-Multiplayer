@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: flashcard-frenzy-multiplayer
+    env: node
+    plan: free
+    branch: main
+    buildCommand: npm run build
+    startCommand: npm run start
+    regions:
+      - oregon
+    healthCheckPath: /
+    autoDeploy: true
