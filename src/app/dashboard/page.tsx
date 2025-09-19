@@ -32,6 +32,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     const getUser = async () => {
+      if (!supabase) {
+        console.warn('Supabase client not available')
+        setUser(null)
+        setLoading(false)
+        return
+      }
+
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         setUser(user)
@@ -65,7 +72,9 @@ export default function Dashboard() {
     // clear guest if present
     try { document.cookie = 'guest_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT' } catch { }
     try { localStorage.removeItem('guest_user') } catch { }
-    await supabase.auth.signOut()
+    if (supabase) {
+      await supabase.auth.signOut()
+    }
     router.push('/')
   }
 
@@ -189,8 +198,8 @@ export default function Dashboard() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`flex-1 flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all ${activeTab === tab.id
-                    ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
               >
                 <tab.icon className="w-5 h-5" />

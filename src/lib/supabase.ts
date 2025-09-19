@@ -1,29 +1,55 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { createBrowserClient } from '@supabase/ssr';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+// Detect build/static generation time
+const isServer = typeof window === 'undefined';
+const isBuildTime = isServer && (process.env.NODE_ENV === 'production' || process.env.NEXT_PHASE === 'phase-production-build');
 
-export const SUPABASE_URL = supabaseUrl
-export const SUPABASE_ANON_KEY = supabaseAnonKey
-export const IS_SUPABASE_CONFIGURED = Boolean(supabaseUrl && supabaseAnonKey)
+// Always provide valid URLs to avoid client creation errors
+const DUMMY_URL = 'https://placeholder-url.supabase.co';
+const DUMMY_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSJ9.gr3oMJCyPi_J6WnVl5yl1tc9k5RPJssR3oMazgY3Qbk';
+
+// During build/static generation, use dummy values
+const supabaseUrl = isBuildTime ? DUMMY_URL : (process.env.NEXT_PUBLIC_SUPABASE_URL || DUMMY_URL);
+const supabaseAnonKey = isBuildTime ? DUMMY_KEY : (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || DUMMY_KEY);
+const supabaseServiceKey = isBuildTime ? DUMMY_KEY : (process.env.SUPABASE_SERVICE_ROLE_KEY || '');
+
+export const SUPABASE_URL = supabaseUrl;
+export const SUPABASE_ANON_KEY = supabaseAnonKey;
+export const IS_SUPABASE_CONFIGURED = !isBuildTime && Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+
+// Create a dummy client that returns empty data for all operations
+const createDummyClient = () => {
+  const dummyClient = createClient(DUMMY_URL, DUMMY_KEY);
+  // Override methods to return empty data
+  const emptyResponse = { data: null, error: null };
+  dummyClient.auth = {
+    ...dummyClient.auth,
+    getUser: async () => ({ data: { user: null }, error: null }),
+    signOut: async () => emptyResponse,
+    signInWithPassword: async () => emptyResponse,
+    signInWithOAuth: async () => emptyResponse,
+    signUp: async () => emptyResponse,
+  } as any;
+  return dummyClient;
+};
 
 // Client-side Supabase client
 export const createClientComponentClient = () => {
+  if (isBuildTime) {
+    return createDummyClient();
+  }
   return createBrowserClient(supabaseUrl, supabaseAnonKey);
 };
 
 // Server-side Supabase client
-// Service role client (for admin operations)
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase: SupabaseClient = isBuildTime ? createDummyClient() : createClient(supabaseUrl, supabaseAnonKey);
 
-// Service role client (for admin operations) - only create if service key is provided
-export const supabaseAdmin = supabaseServiceKey
-  ? createClient(supabaseUrl, supabaseServiceKey, {
+// Service role client (for admin operations)
+export const supabaseAdmin: SupabaseClient | null = isBuildTime ? createDummyClient() :
+  (supabaseServiceKey ? createClient(supabaseUrl, supabaseServiceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
-  })
-  : null;
+  }) : null);
 
 // Types for our database
 export interface Profile {

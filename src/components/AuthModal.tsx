@@ -40,6 +40,12 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
 
   const supabase = createClientComponentClient()
 
+  // Early return if Supabase client is not available (during build)
+  if (!supabase) {
+    console.warn('Supabase client not available')
+    return null
+  }
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
     setFormData(prev => ({
@@ -53,8 +59,8 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
     setIsLoading(true)
     setError('')
 
-    if (!IS_SUPABASE_CONFIGURED) {
-      setError('Authentication is not configured. Please set Supabase env variables.')
+    if (!supabase || !IS_SUPABASE_CONFIGURED) {
+      setError('Authentication is not configured or unavailable.')
       setIsLoading(false)
       return
     }
@@ -182,8 +188,8 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
             <button
               onClick={() => setActiveTab('login')}
               className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${activeTab === 'login'
-                  ? 'text-white border-b-2 border-purple-500 bg-white/5'
-                  : 'text-gray-400 hover:text-white'
+                ? 'text-white border-b-2 border-purple-500 bg-white/5'
+                : 'text-gray-400 hover:text-white'
                 }`}
             >
               Login
@@ -191,8 +197,8 @@ export default function AuthModal({ isOpen, onClose, defaultTab = 'login' }: Aut
             <button
               onClick={() => setActiveTab('register')}
               className={`flex-1 py-3 px-4 text-center font-medium transition-colors ${activeTab === 'register'
-                  ? 'text-white border-b-2 border-purple-500 bg-white/5'
-                  : 'text-gray-400 hover:text-white'
+                ? 'text-white border-b-2 border-purple-500 bg-white/5'
+                : 'text-gray-400 hover:text-white'
                 }`}
             >
               Sign Up
