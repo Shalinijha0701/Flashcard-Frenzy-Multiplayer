@@ -2,8 +2,17 @@ import connectDB, { Question } from './mongodb'
 import { sampleQuestions } from './sampleQuestions'
 
 export async function seedDatabase() {
+  // Skip DB operations during build
+  if (process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build') {
+    return { success: true, count: 0 }
+  }
+
   try {
     await connectDB()
+    
+    if (!process.env.MONGODB_URI) {
+      throw new Error('MONGODB_URI environment variable is required')
+    }
     
     // Clear existing questions
     await Question.deleteMany({})

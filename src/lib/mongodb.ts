@@ -3,6 +3,9 @@ import mongoose from 'mongoose'
 const MONGODB_URI = process.env.MONGODB_URI
 const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || 'flashcard_frenzy'
 
+// Skip DB connection during build
+const isBuildTime = process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build'
+
 interface Global {
   mongoose: {
     conn: typeof mongoose | null
@@ -19,6 +22,11 @@ if (!cached) {
 }
 
 async function connectDB() {
+  // During build, return early without connecting
+  if (isBuildTime) {
+    return null
+  }
+
   if (cached.conn) {
     return cached.conn
   }
