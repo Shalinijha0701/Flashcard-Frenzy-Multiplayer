@@ -12,15 +12,15 @@ services:
     autoDeploy: true
     envVars:
       - key: NEXT_PUBLIC_SUPABASE_URL
-        sync: false
+        value: "https://placeholder.supabase.co"
       - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
-        sync: false
+        value: "placeholder_key"
       - key: SUPABASE_SERVICE_ROLE_KEY
-        sync: false
+        value: "placeholder_service_key"
       - key: MONGODB_URI
-        sync: false
+        value: "mongodb://placeholder:27017/flashcard_frenzy"
       - key: MONGODB_DB_NAME
-        sync: false
+        value: "flashcard_frenzy"
       - key: NEXT_PUBLIC_MAX_PLAYERS_PER_ROOM
         value: "8"
       - key: NEXT_PUBLIC_DEFAULT_QUESTION_TIME

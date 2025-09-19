@@ -32,8 +32,9 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    if (!MONGODB_URI) {
-      throw new Error('Please define the MONGODB_URI environment variable')
+    if (!MONGODB_URI || MONGODB_URI.includes('placeholder')) {
+      console.warn('MongoDB not configured - using demo mode')
+      return null
     }
 
     const opts = {
@@ -50,7 +51,8 @@ async function connectDB() {
     cached.conn = await cached.promise
   } catch (e) {
     cached.promise = null
-    throw e
+    console.warn('MongoDB connection failed - using demo mode:', e)
+    return null
   }
 
   return cached.conn
