@@ -309,66 +309,7 @@ NEXT_PUBLIC_DEFAULT_QUESTION_TIME=30
 NEXT_PUBLIC_DEFAULT_ROUNDS=10
 ```
 
-4. Click "Deploy". Vercel will build and provide a secure HTTPS URL.
+ 
 
-If you prefer the CLI: `vercel --prod` will deploy the current branch to production after you log in.
-
-### Alternative Deployment Options
-- **Netlify**: Great for static deployments
-- **Railway**: Easy database hosting
-- **DigitalOcean App Platform**: Full-stack deployment
-
-## 📊 Performance Optimizations
-
-- **Image Optimization**: Next.js automatic image optimization
-- **Code Splitting**: Automatic route-based splitting
-- **Caching**: Aggressive caching for static assets
-- **Lazy Loading**: Components load on demand
-- **Database Indexing**: Optimized MongoDB queries
-- **CDN**: Global content delivery
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
-
-### Code Style
-
-- Use TypeScript for all new code
-- Follow ESLint and Prettier configurations
-- Write tests for new features
-- Update documentation as needed
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Next.js Team** for the amazing React framework
-- **Supabase** for seamless backend services
-- **MongoDB** for reliable database solutions
-- **Tailwind CSS** for beautiful, utility-first styling
-- **Framer Motion** for smooth animations
-- **Lucide** for clean, consistent icons
-
-## 📞 Support
-
-- **Documentation**: [docs.flashcardfrenzy.com](https://docs.flashcardfrenzy.com)
-- **Discord Community**: [Join our Discord](https://discord.gg/flashcardfrenzy)
-- **GitHub Issues**: Report bugs and request features
-- **Email**: support@flashcardfrenzy.com
-
----
-
-**Built with ❤️ for competitive learners worldwide**
-
-*Challenge your mind. Race your friends. Become a champion.*
-\nDeployment trigger: README update (for Vercel rebuild)
+ 
+ 
