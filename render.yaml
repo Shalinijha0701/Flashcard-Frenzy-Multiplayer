@@ -4,8 +4,8 @@ services:
     env: node
     plan: free
     branch: main
-    buildCommand: npm run build
-    startCommand: npm run start
+    buildCommand: npm install && npm run build
+    startCommand: node server.js
     regions:
       - oregon
     healthCheckPath: /
